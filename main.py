@@ -16,10 +16,10 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.setupUi(self)
 
         self.com_port = "COM1"
-        self.baud_rate = "9600"
-        self.data_bits = "8"
+        self.baud_rate = 9600
+        self.data_bits = 8
         self.parity = "None"
-        self.stop_bits = "1"
+        self.stop_bits = 1
         self.encoding = "ASCII"
         # Parameters list
         self.param_list = [self.com_port, self.baud_rate, self.stop_bits, self.data_bits, self.encoding]
