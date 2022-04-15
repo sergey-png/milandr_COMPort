@@ -24,7 +24,6 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         # Parameters list
         self.param_list = [self.com_port, self.baud_rate, self.stop_bits, self.data_bits, self.encoding]
         self.serial = QSerialPort()
-        self.setup_ui()
 
         # Connect signals to slots
         self.ui.pushButton.clicked.connect(self.open_port)
@@ -41,16 +40,10 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             widget.itemClicked.connect(partial(self.list_widget_clicked, i))
 
         # Set background color of every item to white for all list widgets
-        for i in range(self.ui.listWidget.count()):
-            self.ui.listWidget.item(i).setBackground(QtGui.QColor(255, 255, 255))
-        for i in range(self.ui.listWidget_2.count()):
-            self.ui.listWidget_2.item(i).setBackground(QtGui.QColor(255, 255, 255))
-        for i in range(self.ui.listWidget_3.count()):
-            self.ui.listWidget_3.item(i).setBackground(QtGui.QColor(255, 255, 255))
-        for i in range(self.ui.listWidget_4.count()):
-            self.ui.listWidget_4.item(i).setBackground(QtGui.QColor(255, 255, 255))
-        for i in range(self.ui.listWidget_5.count()):
-            self.ui.listWidget_5.item(i).setBackground(QtGui.QColor(255, 255, 255))
+        for widget in self.list_of_widgets:
+            for i in range(widget.count()):
+                widget.item(i).setBackground(QtGui.QColor(255, 255, 255))
+        self.setup_ui()
 
     def setup_ui(self):
         self.setWindowTitle("Milandr Terminal")
@@ -64,6 +57,8 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.textEdit.setEnabled(False)
         self.ui.textEdit.setText("")
         self.ui.textBrowser.setText("")
+        for widget in self.list_of_widgets:
+            widget.setEnabled(True)
         return
 
     # noinspection PyArgumentList
@@ -79,9 +74,9 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
                 widget.item(j).setBackground(QtGui.QColor(255, 255, 255))  # Set the background color of the
                 # unselected item to white
         # Set the text of the text edit to the selected item
-        self.ui.textEdit.setText(text)
         # Set parameters of the serial port
         self.param_list[i] = text
+        self.ui.textEdit.setText(self.param_list[i])
         return
 
     def open_port(self):
@@ -99,6 +94,10 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.ui.pushButton_6.setEnabled(True)
                 self.ui.textEdit.setEnabled(True)
                 self.ui.textBrowser.append("Port opened successfully")
+                for element in self.param_list:
+                    self.ui.textBrowser.append(element)
+                for widget in self.list_of_widgets:
+                    widget.setEnabled(False)
             else:
                 self.ui.textBrowser.append("Port opening failed")
         except Exception as error:
@@ -113,6 +112,8 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.serial.close()
         self.setup_ui()
         self.ui.textBrowser.append("Port closed successfully")
+        for widget in self.list_of_widgets:
+            widget.setEnabled(True)
         return
 
     def send_data(self):
