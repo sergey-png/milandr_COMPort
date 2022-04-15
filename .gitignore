@@ -1,4 +1,5 @@
 .idea
+.git
 /venv
 /__pycache__
 /node_modules
