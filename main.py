@@ -15,7 +15,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.com_port = "COM1"
+        self.com_port = "COM3"
         self.baud_rate = 9600
         self.data_bits = 8
         self.parity = "None"
@@ -86,6 +86,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             self.serial.setDataBits(QSerialPort.DataBits(int(self.data_bits)))
             self.serial.setStopBits(QSerialPort.StopBits(int(self.stop_bits)))
             self.serial.setFlowControl(QSerialPort.NoFlowControl)
+            print(self.serial.open(QSerialPort.ReadWrite))
             if self.serial.open(QSerialPort.ReadWrite):
                 self.ui.pushButton.setEnabled(False)
                 self.ui.pushButton_2.setEnabled(True)
@@ -165,6 +166,8 @@ def read_data_from_serial_port(serial: QSerialPort, textBrowser: QTextBrowser, e
 read_data_thread = False
 
 if __name__ == "__main__":
+    print(QSerialPortInfo.availablePorts() if QSerialPortInfo.availablePorts() else "No available ports")
+
     app = QtWidgets.QApplication(sys.argv)
     myapp = MyWin()
     myapp.show()
