@@ -20,7 +20,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data_bits = 8
         self.parity = "None"
         self.stop_bits = 1
-        self.encoding = "ASCII"
+        self.encoding = "HEX"
         # Parameters list
         self.param_list = [self.com_port, self.baud_rate, self.stop_bits, self.data_bits, self.encoding]
         self.serial = QSerialPort()
@@ -59,6 +59,10 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.textBrowser.setText("")
         for widget in self.list_of_widgets:
             widget.setEnabled(True)
+        line = f"You can open port with current parametrs:\n" \
+               f"Port name = {self.com_port}; Baud = {self.baud_rate}; Stop bits = {self.stop_bits};" \
+               f"Data bits = {self.data_bits}; Encoding = {self.encoding}"
+        self.ui.textEdit.setText(line)
         return
 
     # noinspection PyArgumentList
@@ -86,23 +90,25 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             self.serial.setDataBits(QSerialPort.DataBits(int(self.data_bits)))
             self.serial.setStopBits(QSerialPort.StopBits(int(self.stop_bits)))
             self.serial.setFlowControl(QSerialPort.NoFlowControl)
-            print(self.serial.open(QSerialPort.ReadWrite))
-            if self.serial.open(QSerialPort.ReadWrite):
+            opening_port = self.serial.open(QSerialPort.ReadWrite)
+            print(f"Opening port = {opening_port}")
+            if opening_port:
                 self.ui.pushButton.setEnabled(False)
                 self.ui.pushButton_2.setEnabled(True)
                 self.ui.pushButton_4.setEnabled(True)
                 self.ui.pushButton_5.setEnabled(True)
                 self.ui.pushButton_6.setEnabled(True)
                 self.ui.textEdit.setEnabled(True)
+                self.ui.textEdit.setText("")
                 self.ui.textBrowser.append("Port opened successfully")
                 for element in self.param_list:
-                    self.ui.textBrowser.append(element)
+                    self.ui.textBrowser.append(str(element))
                 for widget in self.list_of_widgets:
                     widget.setEnabled(False)
             else:
                 self.ui.textBrowser.append("Port opening failed")
         except Exception as error:
-            self.ui.textBrowser.setText("Error: " + str(error))
+            self.ui.textBrowser.setText("Error in port opening func: " + str(error))
 
     def clear_all(self):
         self.ui.textEdit.setText("")
@@ -120,7 +126,6 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
     def send_data(self):
         try:
             self.serial.write(self.ui.textEdit.toPlainText().encode(self.encoding))
-            self.ui.textEdit.setText("")
             self.ui.textBrowser.append("Data sent successfully")
         except Exception as error:
             self.ui.textBrowser.setText("Error: " + str(error))
@@ -129,7 +134,9 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
     def read_data(self):
         try:
             data = self.serial.readAll()
-            self.ui.textBrowser.append(data.data().decode(self.encoding))
+            print(f"Data read: {data}")
+            self.ui.textBrowser.append(f"Data: '{data.data().decode(self.encoding)}'")
+            self.ui.textBrowser.verticalScrollBar().setValue(self.ui.textBrowser.verticalScrollBar().maximum())
         except Exception as error:
             self.ui.textBrowser.setText("Error: " + str(error))
         return
@@ -153,10 +160,12 @@ def read_data_from_serial_port(serial: QSerialPort, textBrowser: QTextBrowser, e
     global read_data_thread
     try:
         while True:
-            time.sleep(0.1)
+            time.sleep(0.5)
             if read_data_thread:
                 data = serial.readAll()
-                textBrowser.append(data.data().decode(encoding))
+                print(f"Data read: {data}")
+                textBrowser.append(f"Data: '{data.data().decode(encoding)}'")
+                textBrowser.verticalScrollBar().setValue(textBrowser.verticalScrollBar().maximum())
             else:
                 break
     except Exception as error:
@@ -167,7 +176,7 @@ read_data_thread = False
 
 if __name__ == "__main__":
     print(QSerialPortInfo.availablePorts() if QSerialPortInfo.availablePorts() else "No available ports")
-
+    print(QSerialPortInfo.portName(QSerialPortInfo.availablePorts()[0]) if QSerialPortInfo.availablePorts() else "")
     app = QtWidgets.QApplication(sys.argv)
     myapp = MyWin()
     myapp.show()
