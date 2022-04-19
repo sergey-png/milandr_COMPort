@@ -16,8 +16,8 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.setupUi(self)
         # Parameters list
         self.param_dict = {
-            "com_port": "COM3",
-            "baud_rate": 9600,
+            "com_port": "COM5",
+            "baud_rate": 115200,
             "stop_bits": 1,
             "data_bits": 8,
             "encoding": "ASCII"
@@ -102,8 +102,8 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.ui.textEdit.setEnabled(True)
                 self.ui.textEdit.setText("")
                 self.ui.textBrowser.append("Port opened successfully")
-                for element in self.param_list:
-                    self.ui.textBrowser.append(str(element))
+                for element in self.param_dict:
+                    self.ui.textBrowser.append(str(self.param_dict[element]))
                 for widget in self.list_of_widgets:
                     widget.setEnabled(False)
             else:
@@ -112,14 +112,18 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             self.ui.textBrowser.setText("Error in port opening func: " + str(error))
 
     def clear_all(self):
+        global text_in_browser
         self.ui.textEdit.setText("")
         self.ui.textBrowser.setText("")
+        text_in_browser = ""
         return
 
     def close_port(self):
+        global read_data_thread
         self.serial.close()
         self.setup_ui()
         self.ui.textBrowser.append("Port closed successfully")
+        read_data_thread = False
         for widget in self.list_of_widgets:
             widget.setEnabled(True)
         return
@@ -146,34 +150,41 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         global read_data_thread
         # Read data from serial port and display it in text browser
         # Start a thread to read data from serial port
+        self.ui.textBrowser.setText("")
         if read_data_thread is False:
             read_data_thread = True
-            thread = threading.Thread(target=read_data_from_serial_port, args=(self.serial, self.ui.textBrowser,
-                                                                               self.param_dict['encoding']), daemon=True)
+            thread = threading.Thread(target=read_data_from_serial_port,
+                                      args=(self.serial, self.ui.textBrowser,
+                                            self.param_dict['encoding']),
+                                      daemon=True)
             thread.start()
         else:
-            self.ui.textBrowser.append("Stop reading data from serial port")
+            self.ui.textBrowser.insertPlainText("\nStop reading data from serial port")
             read_data_thread = False
         return
+
+
+read_data_thread: bool = False
 
 
 def read_data_from_serial_port(serial: QSerialPort, textBrowser: QTextBrowser, encoding: str):
     global read_data_thread
     try:
         while True:
-            time.sleep(0.5)
             if read_data_thread:
-                data = serial.readAll()
-                print(f"Data read: {data}")
-                textBrowser.append(f"Data: '{data.data().decode(encoding)}'")
-                textBrowser.verticalScrollBar().setValue(textBrowser.verticalScrollBar().maximum())
+                kek = serial.waitForReadyRead(1)
+                if kek:
+                    data = serial.readAll()
+                    text = data.data().decode(encoding)
+                    # print(f"Data read: {text}")
+
+                    textBrowser.insertPlainText(text)
+                    textBrowser.verticalScrollBar().setValue(textBrowser.verticalScrollBar().maximum())
             else:
                 break
-    except Exception as error:
-        textBrowser.setText("Error: " + str(error))
+    except SystemExit:
+        textBrowser.setText("Error: :(")
 
-
-read_data_thread = False
 
 if __name__ == "__main__":
     print(QSerialPortInfo.availablePorts() if QSerialPortInfo.availablePorts() else "No available ports")
