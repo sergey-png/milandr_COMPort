@@ -14,15 +14,15 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         super(MyWin, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
-        self.com_port = "COM3"
-        self.baud_rate = 9600
-        self.data_bits = 8
-        self.parity = "None"
-        self.stop_bits = 1
-        self.encoding = "HEX"
         # Parameters list
-        self.param_list = [self.com_port, self.baud_rate, self.stop_bits, self.data_bits, self.encoding]
+        self.param_dict = {
+            "com_port": "COM3",
+            "baud_rate": 9600,
+            "stop_bits": 1,
+            "data_bits": 8,
+            "encoding": "ASCII"
+        }
+        self.param_dict_keys = list(self.param_dict)
         self.serial = QSerialPort()
 
         # Connect signals to slots
@@ -32,7 +32,6 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.pushButton_3.clicked.connect(self.clear_all)
         self.ui.pushButton_5.clicked.connect(self.read_data)
         self.ui.pushButton_6.clicked.connect(self.auto_read_data)
-
         # listWidgets func on click
         self.list_of_widgets = [self.ui.listWidget, self.ui.listWidget_2, self.ui.listWidget_3, self.ui.listWidget_4,
                                 self.ui.listWidget_5]
@@ -60,8 +59,9 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         for widget in self.list_of_widgets:
             widget.setEnabled(True)
         line = f"You can open port with current parametrs:\n" \
-               f"Port name = {self.com_port}; Baud = {self.baud_rate}; Stop bits = {self.stop_bits};" \
-               f"Data bits = {self.data_bits}; Encoding = {self.encoding}"
+               f"Port name = {self.param_dict['com_port']}; Baud = {self.param_dict['baud_rate']}; Stop bits = " \
+               f"{self.param_dict['stop_bits']};Data bits = {self.param_dict['data_bits']}; " \
+               f"Encoding = {self.param_dict['encoding']}"
         self.ui.textEdit.setText(line)
         return
 
@@ -79,16 +79,17 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
                 # unselected item to white
         # Set the text of the text edit to the selected item
         # Set parameters of the serial port
-        self.param_list[i] = text
-        self.ui.textEdit.setText(self.param_list[i])
+        self.param_dict[self.param_dict_keys[i]] = text
+        self.ui.textEdit.setText(self.param_dict[self.param_dict_keys[i]])
+        print(self.param_dict)
         return
 
     def open_port(self):
         try:
-            self.serial.setPortName(self.com_port)
-            eval(f"self.serial.setBaudRate(QSerialPort.Baud{int(self.baud_rate)})")
-            self.serial.setDataBits(QSerialPort.DataBits(int(self.data_bits)))
-            self.serial.setStopBits(QSerialPort.StopBits(int(self.stop_bits)))
+            self.serial.setPortName(self.param_dict["com_port"])
+            eval(f"self.serial.setBaudRate(QSerialPort.Baud{self.param_dict['baud_rate']})")
+            self.serial.setDataBits(QSerialPort.DataBits(int(self.param_dict['data_bits'])))
+            self.serial.setStopBits(QSerialPort.StopBits(int(self.param_dict['stop_bits'])))
             self.serial.setFlowControl(QSerialPort.NoFlowControl)
             opening_port = self.serial.open(QSerialPort.ReadWrite)
             print(f"Opening port = {opening_port}")
@@ -125,7 +126,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def send_data(self):
         try:
-            self.serial.write(self.ui.textEdit.toPlainText().encode(self.encoding))
+            self.serial.write(self.ui.textEdit.toPlainText().encode(self.param_dict['encoding']))
             self.ui.textBrowser.append("Data sent successfully")
         except Exception as error:
             self.ui.textBrowser.setText("Error: " + str(error))
@@ -135,7 +136,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         try:
             data = self.serial.readAll()
             print(f"Data read: {data}")
-            self.ui.textBrowser.append(f"Data: '{data.data().decode(self.encoding)}'")
+            self.ui.textBrowser.append(f"Data: '{data.data().decode(self.param_dict['encoding'])}'")
             self.ui.textBrowser.verticalScrollBar().setValue(self.ui.textBrowser.verticalScrollBar().maximum())
         except Exception as error:
             self.ui.textBrowser.setText("Error: " + str(error))
@@ -148,7 +149,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         if read_data_thread is False:
             read_data_thread = True
             thread = threading.Thread(target=read_data_from_serial_port, args=(self.serial, self.ui.textBrowser,
-                                                                               self.encoding), daemon=True)
+                                                                               self.param_dict['encoding']), daemon=True)
             thread.start()
         else:
             self.ui.textBrowser.append("Stop reading data from serial port")
