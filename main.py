@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from base import Ui_MainWindow
 import threading
-from PyQt5.QtWidgets import QTextBrowser
+from PyQt5.QtWidgets import QTextBrowser, QTextEdit
 from functools import partial
 
 
@@ -16,7 +16,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.setupUi(self)
         # Parameters list
         self.param_dict = {
-            "com_port": "COM5",
+            "com_port": "COM3",  # str(QSerialPortInfo.portName(QSerialPortInfo.availablePorts()[0]))
             "baud_rate": 115200,
             "stop_bits": 1,
             "data_bits": 8,
@@ -28,9 +28,9 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         # Connect signals to slots
         self.ui.pushButton.clicked.connect(self.open_port)
         self.ui.pushButton_2.clicked.connect(self.close_port)
-        self.ui.pushButton_4.clicked.connect(self.send_data)
         self.ui.pushButton_3.clicked.connect(self.clear_all)
-        self.ui.pushButton_5.clicked.connect(self.read_data)
+        self.ui.pushButton_4.clicked.connect(self.send_data)  # Запросить расстояние один раз
+        self.ui.pushButton_5.clicked.connect(self.always_send_data)  # Запрашивать постоянно каждую ОПРЕДЕЛЕННУЮ секунду
         self.ui.pushButton_6.clicked.connect(self.auto_read_data)
         # listWidgets func on click
         self.list_of_widgets = [self.ui.listWidget, self.ui.listWidget_2, self.ui.listWidget_3, self.ui.listWidget_4,
@@ -49,8 +49,8 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setFixedSize(self.size())
         self.ui.pushButton.setEnabled(True)
         self.ui.pushButton_2.setEnabled(False)
-        self.ui.pushButton_4.setEnabled(False)
         self.ui.pushButton_3.setEnabled(True)
+        self.ui.pushButton_4.setEnabled(False)
         self.ui.pushButton_5.setEnabled(False)
         self.ui.pushButton_6.setEnabled(False)
         self.ui.textEdit.setEnabled(False)
@@ -119,31 +119,39 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def close_port(self):
-        global read_data_thread
+        global read_data_thread, always_send_data
         self.serial.close()
         self.setup_ui()
         self.ui.textBrowser.append("Port closed successfully")
         read_data_thread = False
+        always_send_data = False
         for widget in self.list_of_widgets:
             widget.setEnabled(True)
         return
 
+    # TODO отправка запроса на получение данных ОДИН раз
     def send_data(self):
         try:
-            self.serial.write(self.ui.textEdit.toPlainText().encode(self.param_dict['encoding']))
-            self.ui.textBrowser.append("Data sent successfully")
+            self.serial.write("".encode(self.param_dict["encoding"]))  # ЗАПРАШИВАЮ ДАННЫЕ (КОД ***)
         except Exception as error:
-            self.ui.textBrowser.setText("Error: " + str(error))
+            self.ui.textEdit.setText("Error: " + str(error))
         return
 
-    def read_data(self):
-        try:
-            data = self.serial.readAll()
-            print(f"Data read: {data}")
-            self.ui.textBrowser.append(f"Data: '{data.data().decode(self.param_dict['encoding'])}'")
-            self.ui.textBrowser.verticalScrollBar().setValue(self.ui.textBrowser.verticalScrollBar().maximum())
-        except Exception as error:
-            self.ui.textBrowser.setText("Error: " + str(error))
+    # TODO отправка запросов каждые несколько секунд, определяется пользователем
+    def always_send_data(self):
+        global always_send_data
+        if always_send_data is False:
+            always_send_data = True
+            try:
+                seconds = float(self.ui.lineEdit.text())
+                thread = threading.Thread(target=send_data_thread,
+                                          args=(self.serial, self.ui.textEdit, self.param_dict, seconds),
+                                          daemon=True)
+                thread.start()
+            except Exception as error:
+                self.ui.textEdit.setText(f"Ошибка, невозможно конвертировать введное значение в число\n{error}")
+        else:
+            always_send_data = False
         return
 
     def auto_read_data(self):
@@ -165,23 +173,67 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 read_data_thread: bool = False
+always_send_data: bool = False
+global_data = []
+
+
+def send_data_thread(serial: QSerialPort, textEdit: QTextEdit, param_dict: dict, sleep_time: float):
+    global global_data, always_send_data
+    encoding = param_dict["encoding"]
+    while always_send_data:
+        print(f"global_data = {global_data}")
+        try:
+            # serial.write("".encode(encoding))  # ЗАПРАШИВАЮ ДАННЫЕ (КОД ***)
+            start: bool = False
+            counting: int = 0  # Если так и не получим \r 1000 раз, то выйдем из цикла
+            summary_text: str = ""
+            while always_send_data:
+                kek = serial.waitForReadyRead(1)
+                if kek:
+                    data = serial.readAll()
+                    text = data.data().decode(encoding)
+                    print(f"Data read: {[text]}")
+                    if text.count("\r") == 1 and start is False:  # Если есть \r
+                        start = True
+                    elif text.count("\r") == 0 and start is True:  # добавляем текст (должен добавлять посимвольно)
+                        summary_text += text
+                        counting += 1
+                    elif text.count("\r") == 1 and start is True:  # Заканчиваем построение
+                        start = True
+                        print('Все данные получены, записываю')
+                        if "\r" not in summary_text:
+                            try:
+                                summary_text = float(summary_text)
+                                global_data.append(summary_text)  # Global Data add
+                            except ValueError:
+                                break
+                        break
+                    if counting > 1000:
+                        print('Не получен конец данных')
+                        break
+                else:
+                    continue
+        except SystemExit as error:
+            textEdit.setText("Error: " + str(error))
+        finally:
+            time.sleep(sleep_time)
+    return
 
 
 def read_data_from_serial_port(serial: QSerialPort, textBrowser: QTextBrowser, encoding: str):
     global read_data_thread
     try:
-        while True:
-            if read_data_thread:
-                kek = serial.waitForReadyRead(1)
-                if kek:
-                    data = serial.readAll()
-                    text = data.data().decode(encoding)
-                    # print(f"Data read: {text}")
-
+        while read_data_thread:
+            kek = serial.waitForReadyRead(1)
+            if kek:
+                data = serial.readAll()
+                text = data.data().decode(encoding)
+                print(f"Data read: {text}")
+                if text == "\r" or text == "\n":
+                    textBrowser.insertPlainText("\n")
+                else:
                     textBrowser.insertPlainText(text)
-                    textBrowser.verticalScrollBar().setValue(textBrowser.verticalScrollBar().maximum())
-            else:
-                break
+                textBrowser.verticalScrollBar().setValue(textBrowser.verticalScrollBar().maximum())
     except SystemExit:
         textBrowser.setText("Error: :(")
 
@@ -193,3 +245,12 @@ if __name__ == "__main__":
     myapp = MyWin()
     myapp.show()
     sys.exit(app.exec_())
+
+"""
+Создать кнопку, при нажатии отправляется кодовый сигнал и ждет получения информации(в целом можно оставить функцию,
+которая постоянно мониторит получаемую информацию с микроконтроллера.
+
+Создать кнопку, при нажатии отправляется КАЖДУЮ Определнную пользователем Секунду сигнал для получения информации.
+(создать флаг переключения)
+
+"""
