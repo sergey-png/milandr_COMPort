@@ -203,8 +203,8 @@ def send_data_thread(serial: QSerialPort, textEdit: QTextEdit, param_dict: dict,
                         print('Все данные получены, записываю')
                         if "\r" not in summary_text:
                             try:
-                                summary_text = float(summary_text)
-                                global_data.append(summary_text)  # Global Data add
+                                result_number = float(summary_text)
+                                global_data.append(result_number)  # Global Data add
                             except ValueError:
                                 break
                         break
