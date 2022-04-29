@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'base.ui'
+# Form implementation generated from reading ui file 'base.ui.'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -222,7 +222,7 @@ class Ui_MainWindow(object):
         font.setItalic(True)
         self.label_6.setFont(font)
         self.label_6.setObjectName("label_6")
-        self.widget = QtWidgets.QWidget(self.centralwidget)
+        self.widget = PlotWidget(self.centralwidget)
         self.widget.setGeometry(QtCore.QRect(680, 150, 491, 321))
         self.widget.setObjectName("widget")
         MainWindow.setCentralWidget(self.centralwidget)
@@ -349,3 +349,4 @@ class Ui_MainWindow(object):
         self.pushButton_6.setText(_translate("MainWindow", "Auto Read"))
         self.lineEdit.setText(_translate("MainWindow", "0.1"))
         self.label_6.setText(_translate("MainWindow", "seconds"))
+from pyqtgraph import PlotWidget

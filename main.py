@@ -8,6 +8,7 @@ import threading
 from PyQt5.QtWidgets import QTextBrowser, QTextEdit
 from functools import partial
 import pyqtgraph as pg
+from pyqtgraph import PlotWidget
 import numpy as np
 
 

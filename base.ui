@@ -568,7 +568,7 @@ p, li { white-space: pre-wrap; }
      <string>seconds</string>
     </property>
    </widget>
-   <widget class="QWidget" name="widget" native="true">
+   <widget class="PlotWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
       <x>680</x>
@@ -591,6 +591,14 @@ p, li { white-space: pre-wrap; }
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QWidget</extends>
+   <header>pyqtgraph</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
