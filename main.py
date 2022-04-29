@@ -7,6 +7,8 @@ from base import Ui_MainWindow
 import threading
 from PyQt5.QtWidgets import QTextBrowser, QTextEdit
 from functools import partial
+import pyqtgraph as pg
+import numpy as np
 
 
 class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -43,6 +45,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             for i in range(widget.count()):
                 widget.item(i).setBackground(QtGui.QColor(255, 255, 255))
         self.setup_ui()
+        self.draw_graph_from_global_data()
 
     def setup_ui(self):
         self.setWindowTitle("Milandr Terminal")
@@ -63,6 +66,9 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
                f"{self.param_dict['stop_bits']};Data bits = {self.param_dict['data_bits']}; " \
                f"Encoding = {self.param_dict['encoding']}"
         self.ui.textEdit.setText(line)
+        return
+
+    def draw_graph_from_global_data(self):
         return
 
     # noinspection PyArgumentList
@@ -112,10 +118,8 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             self.ui.textBrowser.setText("Error in port opening func: " + str(error))
 
     def clear_all(self):
-        global text_in_browser
         self.ui.textEdit.setText("")
         self.ui.textBrowser.setText("")
-        text_in_browser = ""
         return
 
     def close_port(self):
@@ -174,7 +178,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
 
 read_data_thread: bool = False
 always_send_data: bool = False
-global_data = []
+global_data = []  # Есть вариант сделать это деком через модуль Collections
 
 
 def send_data_thread(serial: QSerialPort, textEdit: QTextEdit, param_dict: dict, sleep_time: float):
@@ -254,3 +258,5 @@ if __name__ == "__main__":
 (создать флаг переключения)
 
 """
+# TODO ---ДОБАВИТЬ ПРИМЕР ПОСТРОЕНИЯ ГРАФИКА В РЕАЛЬНОМ ВРЕМЕНИ (можно использовать заглушку, которая будет добавлять
+#  данные в дек) нужен также thread который будет постоянно рисовать график.
