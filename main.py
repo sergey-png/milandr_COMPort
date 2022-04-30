@@ -1,15 +1,16 @@
 import sys
 import time
-
+from random import randint
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from base import Ui_MainWindow
 import threading
-from PyQt5.QtWidgets import QTextBrowser, QTextEdit
+from PyQt5.QtWidgets import QTextBrowser
 from functools import partial
+from collections import deque
+import numpy as np
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget
-import numpy as np
 
 
 class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -18,8 +19,12 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         # Parameters list
+        if QSerialPortInfo.availablePorts():
+            com_port = str(QSerialPortInfo.portName(QSerialPortInfo.availablePorts()[0]))
+        else:
+            com_port = ""
         self.param_dict = {
-            "com_port": "COM3",  # str(QSerialPortInfo.portName(QSerialPortInfo.availablePorts()[0]))
+            "com_port": f"{com_port}",
             "baud_rate": 115200,
             "stop_bits": 1,
             "data_bits": 8,
@@ -27,26 +32,19 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         }
         self.param_dict_keys = list(self.param_dict)
         self.serial = QSerialPort()
+        self.ui.textBrowser.setText(str(self.param_dict))
 
         # Connect signals to slots
         self.ui.pushButton.clicked.connect(self.open_port)
         self.ui.pushButton_2.clicked.connect(self.close_port)
         self.ui.pushButton_3.clicked.connect(self.clear_all)
-        self.ui.pushButton_4.clicked.connect(self.send_data)  # Запросить расстояние один раз
-        self.ui.pushButton_5.clicked.connect(self.always_send_data)  # Запрашивать постоянно каждую ОПРЕДЕЛЕННУЮ секунду
-        self.ui.pushButton_6.clicked.connect(self.auto_read_data)
-        # listWidgets func on click
-        self.list_of_widgets = [self.ui.listWidget, self.ui.listWidget_2, self.ui.listWidget_3, self.ui.listWidget_4,
-                                self.ui.listWidget_5]
-        for i, widget in enumerate(self.list_of_widgets):
-            widget.itemClicked.connect(partial(self.list_widget_clicked, i))
+        self.ui.pushButton_4.clicked.connect(self.send_data)  # Запросить расстояние один раз (ручная обработка
+        self.ui.pushButton_5.clicked.connect(self.always_recv_data)  # ЧАСТОТА ИЗМЕРЕНИЙ (кнопку переделать)
 
-        # Set background color of every item to white for all list widgets
-        for widget in self.list_of_widgets:
-            for i in range(widget.count()):
-                widget.item(i).setBackground(QtGui.QColor(255, 255, 255))
         self.setup_ui()
-        self.draw_graph_from_global_data()
+        # THREAD для постоянной отрисовки графика с помощью PYQT-GRAPH
+        thread_for_drawing = threading.Thread(target=drawing_thread, daemon=True, args=(self.ui.widget,))
+        thread_for_drawing.start()
 
     def setup_ui(self):
         self.setWindowTitle("Milandr Terminal")
@@ -56,39 +54,6 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.pushButton_3.setEnabled(True)
         self.ui.pushButton_4.setEnabled(False)
         self.ui.pushButton_5.setEnabled(False)
-        self.ui.pushButton_6.setEnabled(False)
-        self.ui.textEdit.setEnabled(False)
-        self.ui.textEdit.setText("")
-        self.ui.textBrowser.setText("")
-        for widget in self.list_of_widgets:
-            widget.setEnabled(True)
-        line = f"You can open port with current parametrs:\n" \
-               f"Port name = {self.param_dict['com_port']}; Baud = {self.param_dict['baud_rate']}; Stop bits = " \
-               f"{self.param_dict['stop_bits']};Data bits = {self.param_dict['data_bits']}; " \
-               f"Encoding = {self.param_dict['encoding']}"
-        self.ui.textEdit.setText(line)
-        return
-
-    def draw_graph_from_global_data(self):
-        return
-
-    # noinspection PyArgumentList
-    def list_widget_clicked(self, i):
-        widget = self.list_of_widgets[i]  # Get the widget by index
-        text = widget.currentItem().text()  # Get the text of the selected item
-        # change color of selected item to green
-        widget.item(widget.currentRow()).setBackground(QtGui.QColor(0, 255, 0))  # Set the background color of the
-        # selected item to green
-        # change color of other items to white
-        for j in range(widget.count()):
-            if j != widget.currentRow():
-                widget.item(j).setBackground(QtGui.QColor(255, 255, 255))  # Set the background color of the
-                # unselected item to white
-        # Set the text of the text edit to the selected item
-        # Set parameters of the serial port
-        self.param_dict[self.param_dict_keys[i]] = text
-        self.ui.textEdit.setText(self.param_dict[self.param_dict_keys[i]])
-        print(self.param_dict)
         return
 
     def open_port(self):
@@ -105,60 +70,55 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.ui.pushButton_2.setEnabled(True)
                 self.ui.pushButton_4.setEnabled(True)
                 self.ui.pushButton_5.setEnabled(True)
-                self.ui.pushButton_6.setEnabled(True)
-                self.ui.textEdit.setEnabled(True)
-                self.ui.textEdit.setText("")
+                # self.ui.pushButton_6.setEnabled(True)
                 self.ui.textBrowser.append("Port opened successfully")
                 for element in self.param_dict:
                     self.ui.textBrowser.append(str(self.param_dict[element]))
-                for widget in self.list_of_widgets:
-                    widget.setEnabled(False)
             else:
                 self.ui.textBrowser.append("Port opening failed")
         except Exception as error:
             self.ui.textBrowser.setText("Error in port opening func: " + str(error))
 
     def clear_all(self):
-        self.ui.textEdit.setText("")
         self.ui.textBrowser.setText("")
         return
 
     def close_port(self):
-        global read_data_thread, always_send_data
+        global always_receive_data
         self.serial.close()
         self.setup_ui()
         self.ui.textBrowser.append("Port closed successfully")
-        read_data_thread = False
-        always_send_data = False
-        for widget in self.list_of_widgets:
-            widget.setEnabled(True)
+        always_receive_data = False
         return
 
     # TODO отправка запроса на получение данных ОДИН раз
     def send_data(self):
-        try:
-            self.serial.write("".encode(self.param_dict["encoding"]))  # ЗАПРАШИВАЮ ДАННЫЕ (КОД ***)
-        except Exception as error:
-            self.ui.textEdit.setText("Error: " + str(error))
+        self.serial.write("".encode(self.param_dict["encoding"]))  # ЗАПРАШИВАЮ ДАННЫЕ (КОД ***)
         return
 
     # TODO отправка запросов каждые несколько секунд, определяется пользователем
-    def always_send_data(self):
-        global always_send_data
-        if always_send_data is False:
-            always_send_data = True
+    def always_recv_data(self):
+        global always_receive_data
+        if always_receive_data is False:
+            always_receive_data = True
             try:
-                seconds = float(self.ui.lineEdit.text())
-                thread = threading.Thread(target=send_data_thread,
-                                          args=(self.serial, self.ui.textEdit, self.param_dict, seconds),
+                # seconds = float(self.ui.lineEdit.text())
+                seconds = 1
+                # TODO Используются не секунды, нужно провести вычисления расчетного потребления и вывести на экран
+                # TODO
+                thread = threading.Thread(target=receive_data_thread,
+                                          args=(self.serial, self.ui.textBrowser, self.param_dict, seconds),
                                           daemon=True)
                 thread.start()
             except Exception as error:
-                self.ui.textEdit.setText(f"Ошибка, невозможно конвертировать введное значение в число\n{error}")
+                self.ui.textBrowser.setText(f"Ошибка, невозможно конвертировать введное значение в число\n{error}")
         else:
-            always_send_data = False
+            always_receive_data = False
         return
 
+
+# Устаревший код для отображения всей полученной информации с микроконтроллера
+"""
     def auto_read_data(self):
         global read_data_thread
         # Read data from serial port and display it in text browser
@@ -175,24 +135,24 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             self.ui.textBrowser.insertPlainText("\nStop reading data from serial port")
             read_data_thread = False
         return
+"""
+
+# read_data_thread: bool = False  УСТАРЕЛО
+always_receive_data: bool = False
+global_data: deque = deque(np.zeros(21))
 
 
-read_data_thread: bool = False
-always_send_data: bool = False
-global_data = []  # Есть вариант сделать это деком через модуль Collections
-
-
-def send_data_thread(serial: QSerialPort, textEdit: QTextEdit, param_dict: dict, sleep_time: float):
-    global global_data, always_send_data
+def receive_data_thread(serial: QSerialPort, textBrowser: QTextBrowser, param_dict: dict, sleep_time: float):
+    global global_data, always_receive_data
     encoding = param_dict["encoding"]
-    while always_send_data:
+    while always_receive_data:
         print(f"global_data = {global_data}")
         try:
             # serial.write("".encode(encoding))  # ЗАПРАШИВАЮ ДАННЫЕ (КОД ***)
             start: bool = False
             counting: int = 0  # Если так и не получим \r 1000 раз, то выйдем из цикла
             summary_text: str = ""
-            while always_send_data:
+            while always_receive_data:
                 kek = serial.waitForReadyRead(1)
                 if kek:
                     data = serial.readAll()
@@ -204,12 +164,11 @@ def send_data_thread(serial: QSerialPort, textEdit: QTextEdit, param_dict: dict,
                         summary_text += text
                         counting += 1
                     elif text.count("\r") == 1 and start is True:  # Заканчиваем построение
-                        start = True
-                        print('Все данные получены, записываю')
+                        print('Все данные получены, отправляю обработчику')
                         if "\r" not in summary_text:
                             try:
-                                result_number = float(summary_text)
-                                global_data.append(result_number)  # Global Data add
+                                incoming_data_handler(summary_text)  # Посылаем данные обработчику, для выяснения
+                                # какая команда пришла с микроконтроллера
                             except ValueError:
                                 break
                         break
@@ -219,12 +178,37 @@ def send_data_thread(serial: QSerialPort, textEdit: QTextEdit, param_dict: dict,
                 else:
                     continue
         except SystemExit as error:
-            textEdit.setText("Error: " + str(error))
+            textBrowser.setText("Error: " + str(error))
         finally:
             time.sleep(sleep_time)
     return
 
 
+def incoming_data_handler(data) -> str:
+    global global_data
+    # TODO Здесь будут обрабатываться полученные символы
+    #  написать условия для определенных действий
+    # Одно из действий написано, если получим числовое значение, значит пришло новое значение расстояния от датчика
+    print("Запуск обработчика полученных компанд")
+    if data == "c1":
+        # если пришла команда 1
+        pass
+    elif data == "c2":
+        # если пришла команда 2
+        pass
+    else:
+        # если команд не было, то значит пришло число
+        try:
+            data = float(data)
+            global_data.append(data)  # Global Data add
+            global_data.popleft()
+        except ValueError:
+            print("Невозможно преобразовать в числовое значение")
+            return
+
+
+#  Код устарел, более не требуется
+"""
 def read_data_from_serial_port(serial: QSerialPort, textBrowser: QTextBrowser, encoding: str):
     global read_data_thread
     try:
@@ -241,14 +225,41 @@ def read_data_from_serial_port(serial: QSerialPort, textBrowser: QTextBrowser, e
                 textBrowser.verticalScrollBar().setValue(textBrowser.verticalScrollBar().maximum())
     except SystemExit:
         textBrowser.setText("Error: :(")
+"""
+
+
+def drawing_thread(widget: PlotWidget, ):
+    global global_data
+    widget.setXRange(0, 20)
+    widget.setYRange(0, 10)
+
+    while True:
+        time.sleep(0.1)
+        print("drawing")
+        widget.clear()
+        widget.plot(list(np.arange(0, 21)), global_data, symbolPen='y')
+
+
+def demo_data():  # DEMO DATA THREAD
+    global global_data
+    while True:
+        print("sending data")
+        print(global_data)
+        time.sleep(0.5)
+        global_data.append(randint(0, 10))
+        global_data.popleft()
 
 
 if __name__ == "__main__":
+    print(global_data)
+
     print(QSerialPortInfo.availablePorts() if QSerialPortInfo.availablePorts() else "No available ports")
     print(QSerialPortInfo.portName(QSerialPortInfo.availablePorts()[0]) if QSerialPortInfo.availablePorts() else "")
     app = QtWidgets.QApplication(sys.argv)
     myapp = MyWin()
     myapp.show()
+    # thread1 = threading.Thread(target=demo_data, daemon=True)  # DEMO DATA THREAD
+    # thread1.start()
     sys.exit(app.exec_())
 
 """
@@ -259,5 +270,3 @@ if __name__ == "__main__":
 (создать флаг переключения)
 
 """
-# TODO ---ДОБАВИТЬ ПРИМЕР ПОСТРОЕНИЯ ГРАФИКА В РЕАЛЬНОМ ВРЕМЕНИ (можно использовать заглушку, которая будет добавлять
-#  данные в дек) нужен также thread который будет постоянно рисовать график.
