@@ -184,7 +184,7 @@ def receive_data_thread(serial: QSerialPort, textBrowser: QTextBrowser, param_di
     return
 
 
-def incoming_data_handler(data) -> str:
+def incoming_data_handler(data):
     global global_data
     # TODO Здесь будут обрабатываться полученные символы
     #  написать условия для определенных действий
@@ -204,7 +204,6 @@ def incoming_data_handler(data) -> str:
             global_data.popleft()
         except ValueError:
             print("Невозможно преобразовать в числовое значение")
-            return
 
 
 #  Код устарел, более не требуется
@@ -258,8 +257,8 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     myapp = MyWin()
     myapp.show()
-    # thread1 = threading.Thread(target=demo_data, daemon=True)  # DEMO DATA THREAD
-    # thread1.start()
+    thread1 = threading.Thread(target=demo_data, daemon=True)  # DEMO DATA THREAD
+    thread1.start()
     sys.exit(app.exec_())
 
 """

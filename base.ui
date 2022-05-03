@@ -209,7 +209,7 @@ p, li { white-space: pre-wrap; }
       <rect>
        <x>240</x>
        <y>-40</y>
-       <width>501</width>
+       <width>531</width>
        <height>331</height>
       </rect>
      </property>
@@ -392,7 +392,7 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="text">
-        <string>Задать 3 контрольных точки</string>
+        <string>Задать 3 контрольных точки с расстоянием:</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_8">
@@ -510,6 +510,19 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="text">
         <string>Загрузить калибровочную информацию</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit">
+       <property name="geometry">
+        <rect>
+         <x>380</x>
+         <y>60</y>
+         <width>111</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>213</string>
        </property>
       </widget>
      </widget>
