@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1085, 789)
+        MainWindow.resize(1040, 789)
         font = QtGui.QFont()
         font.setPointSize(12)
         MainWindow.setFont(font)
@@ -28,6 +28,10 @@ class Ui_MainWindow(object):
         self.tab.setObjectName("tab")
         self.pushButton_13 = QtWidgets.QPushButton(self.tab)
         self.pushButton_13.setGeometry(QtCore.QRect(10, 10, 111, 31))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.pushButton_13.setFont(font)
+        self.pushButton_13.setStyleSheet("")
         self.pushButton_13.setObjectName("pushButton_13")
         self.spinBox = QtWidgets.QSpinBox(self.tab)
         self.spinBox.setGeometry(QtCore.QRect(210, 10, 71, 31))
@@ -68,64 +72,56 @@ class Ui_MainWindow(object):
         self.label_17.setFont(font)
         self.label_17.setObjectName("label_17")
         self.tabWidget_3 = QtWidgets.QTabWidget(self.frame_2)
-        self.tabWidget_3.setGeometry(QtCore.QRect(280, -30, 771, 351))
+        self.tabWidget_3.setGeometry(QtCore.QRect(280, -30, 631, 321))
         self.tabWidget_3.setObjectName("tabWidget_3")
         self.Tab5 = QtWidgets.QWidget()
         self.Tab5.setObjectName("Tab5")
         self.label_18 = QtWidgets.QLabel(self.Tab5)
-        self.label_18.setGeometry(QtCore.QRect(110, 110, 361, 31))
+        self.label_18.setGeometry(QtCore.QRect(0, 10, 621, 311))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setItalic(True)
         self.label_18.setFont(font)
+        self.label_18.setAlignment(QtCore.Qt.AlignCenter)
         self.label_18.setObjectName("label_18")
         self.tabWidget_3.addTab(self.Tab5, "")
         self.hand_2 = QtWidgets.QWidget()
         self.hand_2.setObjectName("hand_2")
         self.pushButton_15 = QtWidgets.QPushButton(self.hand_2)
-        self.pushButton_15.setGeometry(QtCore.QRect(150, 140, 191, 31))
+        self.pushButton_15.setGeometry(QtCore.QRect(220, 140, 191, 31))
         self.pushButton_15.setObjectName("pushButton_15")
         self.label_19 = QtWidgets.QLabel(self.hand_2)
-        self.label_19.setGeometry(QtCore.QRect(30, 20, 361, 31))
+        self.label_19.setGeometry(QtCore.QRect(10, 20, 611, 31))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setItalic(True)
         self.label_19.setFont(font)
+        self.label_19.setAlignment(QtCore.Qt.AlignCenter)
         self.label_19.setObjectName("label_19")
         self.tabWidget_3.addTab(self.hand_2, "")
         self.automate_2 = QtWidgets.QWidget()
         self.automate_2.setObjectName("automate_2")
-        self.label_7 = QtWidgets.QLabel(self.automate_2)
-        self.label_7.setGeometry(QtCore.QRect(170, 70, 71, 31))
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        font.setItalic(True)
-        self.label_7.setFont(font)
-        self.label_7.setObjectName("label_7")
-        self.comboBox_3 = QtWidgets.QComboBox(self.automate_2)
-        self.comboBox_3.setGeometry(QtCore.QRect(30, 71, 111, 31))
-        self.comboBox_3.setObjectName("comboBox_3")
-        self.comboBox_3.addItem("")
-        self.comboBox_3.addItem("")
-        self.pushButton_16 = QtWidgets.QPushButton(self.automate_2)
-        self.pushButton_16.setGeometry(QtCore.QRect(250, 70, 231, 31))
-        self.pushButton_16.setObjectName("pushButton_16")
         self.label_20 = QtWidgets.QLabel(self.automate_2)
-        self.label_20.setGeometry(QtCore.QRect(30, 20, 361, 31))
+        self.label_20.setGeometry(QtCore.QRect(10, 20, 601, 31))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setItalic(True)
         self.label_20.setFont(font)
+        self.label_20.setAlignment(QtCore.Qt.AlignCenter)
         self.label_20.setObjectName("label_20")
+        self.pushButton_23 = QtWidgets.QPushButton(self.automate_2)
+        self.pushButton_23.setGeometry(QtCore.QRect(240, 150, 131, 31))
+        self.pushButton_23.setObjectName("pushButton_23")
         self.tabWidget_3.addTab(self.automate_2, "")
         self.calibrate_2 = QtWidgets.QWidget()
         self.calibrate_2.setObjectName("calibrate_2")
         self.label_21 = QtWidgets.QLabel(self.calibrate_2)
-        self.label_21.setGeometry(QtCore.QRect(30, 20, 361, 31))
+        self.label_21.setGeometry(QtCore.QRect(10, 20, 601, 31))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setItalic(True)
         self.label_21.setFont(font)
+        self.label_21.setAlignment(QtCore.Qt.AlignCenter)
         self.label_21.setObjectName("label_21")
         self.label_22 = QtWidgets.QLabel(self.calibrate_2)
         self.label_22.setGeometry(QtCore.QRect(30, 60, 361, 31))
@@ -147,22 +143,17 @@ class Ui_MainWindow(object):
         self.pushButton_20.setGeometry(QtCore.QRect(30, 150, 331, 31))
         self.pushButton_20.setObjectName("pushButton_20")
         self.label_23 = QtWidgets.QLabel(self.calibrate_2)
-        self.label_23.setGeometry(QtCore.QRect(170, 200, 71, 31))
+        self.label_23.setGeometry(QtCore.QRect(170, 250, 71, 31))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setItalic(True)
         self.label_23.setFont(font)
         self.label_23.setObjectName("label_23")
-        self.comboBox_4 = QtWidgets.QComboBox(self.calibrate_2)
-        self.comboBox_4.setGeometry(QtCore.QRect(30, 201, 111, 31))
-        self.comboBox_4.setObjectName("comboBox_4")
-        self.comboBox_4.addItem("")
-        self.comboBox_4.addItem("")
         self.pushButton_21 = QtWidgets.QPushButton(self.calibrate_2)
-        self.pushButton_21.setGeometry(QtCore.QRect(250, 200, 231, 31))
+        self.pushButton_21.setGeometry(QtCore.QRect(250, 250, 211, 31))
         self.pushButton_21.setObjectName("pushButton_21")
         self.pushButton_22 = QtWidgets.QPushButton(self.calibrate_2)
-        self.pushButton_22.setGeometry(QtCore.QRect(30, 250, 311, 31))
+        self.pushButton_22.setGeometry(QtCore.QRect(30, 200, 311, 31))
         self.pushButton_22.setObjectName("pushButton_22")
         self.lineEdit_2 = QtWidgets.QLineEdit(self.calibrate_2)
         self.lineEdit_2.setGeometry(QtCore.QRect(380, 60, 111, 31))
@@ -174,19 +165,23 @@ class Ui_MainWindow(object):
         font.setItalic(True)
         self.label_24.setFont(font)
         self.label_24.setObjectName("label_24")
+        self.pushButton_24 = QtWidgets.QPushButton(self.calibrate_2)
+        self.pushButton_24.setGeometry(QtCore.QRect(480, 250, 131, 31))
+        self.pushButton_24.setObjectName("pushButton_24")
+        self.lineEdit_4 = QtWidgets.QLineEdit(self.calibrate_2)
+        self.lineEdit_4.setGeometry(QtCore.QRect(30, 250, 111, 31))
+        self.lineEdit_4.setAlignment(QtCore.Qt.AlignCenter)
+        self.lineEdit_4.setObjectName("lineEdit_4")
         self.tabWidget_3.addTab(self.calibrate_2, "")
-        self.graphicsView = QtWidgets.QGraphicsView(self.frame_2)
-        self.graphicsView.setGeometry(QtCore.QRect(30, 370, 421, 261))
-        self.graphicsView.setObjectName("graphicsView")
         self.label_29 = QtWidgets.QLabel(self.frame_2)
-        self.label_29.setGeometry(QtCore.QRect(30, 330, 201, 31))
+        self.label_29.setGeometry(QtCore.QRect(30, 290, 201, 31))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setItalic(True)
         self.label_29.setFont(font)
         self.label_29.setObjectName("label_29")
         self.tabWidget_4 = QtWidgets.QTabWidget(self.frame_2)
-        self.tabWidget_4.setGeometry(QtCore.QRect(510, 340, 491, 291))
+        self.tabWidget_4.setGeometry(QtCore.QRect(510, 290, 491, 341))
         self.tabWidget_4.setObjectName("tabWidget_4")
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
@@ -199,11 +194,12 @@ class Ui_MainWindow(object):
         self.label_28.setAlignment(QtCore.Qt.AlignCenter)
         self.label_28.setObjectName("label_28")
         self.label_25 = QtWidgets.QLabel(self.tab_3)
-        self.label_25.setGeometry(QtCore.QRect(90, 50, 271, 41))
+        self.label_25.setGeometry(QtCore.QRect(10, 50, 461, 41))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setItalic(True)
         self.label_25.setFont(font)
+        self.label_25.setAlignment(QtCore.Qt.AlignCenter)
         self.label_25.setObjectName("label_25")
         self.label_27 = QtWidgets.QLabel(self.tab_3)
         self.label_27.setGeometry(QtCore.QRect(390, 110, 31, 41))
@@ -229,14 +225,23 @@ class Ui_MainWindow(object):
         self.tab_5 = QtWidgets.QWidget()
         self.tab_5.setObjectName("tab_5")
         self.widget_2 = PlotWidget(self.tab_5)
-        self.widget_2.setGeometry(QtCore.QRect(10, 0, 471, 251))
+        self.widget_2.setGeometry(QtCore.QRect(0, 0, 481, 301))
         self.widget_2.setObjectName("widget_2")
         self.tabWidget_4.addTab(self.tab_5, "")
+        self.textBrowser_2 = QtWidgets.QTextBrowser(self.frame_2)
+        self.textBrowser_2.setGeometry(QtCore.QRect(30, 330, 441, 291))
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        self.textBrowser_2.setFont(font)
+        self.textBrowser_2.setObjectName("textBrowser_2")
         self.tabWidget_2.addTab(self.tab, "")
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
         self.textBrowser = QtWidgets.QTextBrowser(self.tab_2)
         self.textBrowser.setGeometry(QtCore.QRect(10, 60, 491, 321))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        self.textBrowser.setFont(font)
         self.textBrowser.setStyleSheet("background-color: rgb(0, 0, 0);\n"
 "color: rgb(0, 255, 0);")
         self.textBrowser.setObjectName("textBrowser")
@@ -383,7 +388,7 @@ class Ui_MainWindow(object):
         self.tabWidget_2.addTab(self.tab_2, "")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1085, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1040, 21))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -392,9 +397,9 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget_2.setCurrentIndex(0)
-        self.tabWidget_3.setCurrentIndex(3)
-        self.tabWidget_4.setCurrentIndex(1)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget_3.setCurrentIndex(0)
+        self.tabWidget_4.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(3)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -417,11 +422,8 @@ class Ui_MainWindow(object):
         self.pushButton_15.setText(_translate("MainWindow", "Запросить расстояние"))
         self.label_19.setText(_translate("MainWindow", "Выбран ручной режим работы"))
         self.tabWidget_3.setTabText(self.tabWidget_3.indexOf(self.hand_2), _translate("MainWindow", "Ручной режим"))
-        self.label_7.setText(_translate("MainWindow", "kHz"))
-        self.comboBox_3.setItemText(0, _translate("MainWindow", "Minimum"))
-        self.comboBox_3.setItemText(1, _translate("MainWindow", "Maximum"))
-        self.pushButton_16.setText(_translate("MainWindow", "Задать частоту измерений"))
         self.label_20.setText(_translate("MainWindow", "Выбран автоматический режим работы"))
+        self.pushButton_23.setText(_translate("MainWindow", "Старт"))
         self.tabWidget_3.setTabText(self.tabWidget_3.indexOf(self.automate_2), _translate("MainWindow", "Авто режим"))
         self.label_21.setText(_translate("MainWindow", "Выбран калибровочный режим работы"))
         self.label_22.setText(_translate("MainWindow", "Задать контрольную точку с расстоянием:"))
@@ -429,17 +431,17 @@ class Ui_MainWindow(object):
         self.pushButton_18.setText(_translate("MainWindow", "Точка 2"))
         self.pushButton_19.setText(_translate("MainWindow", "Точка 3"))
         self.pushButton_20.setText(_translate("MainWindow", "Вычислить калибровочные коэффициенты"))
-        self.label_23.setText(_translate("MainWindow", "kHz"))
-        self.comboBox_4.setItemText(0, _translate("MainWindow", "Minimum"))
-        self.comboBox_4.setItemText(1, _translate("MainWindow", "Maximum"))
+        self.label_23.setText(_translate("MainWindow", "Hz"))
         self.pushButton_21.setText(_translate("MainWindow", "Задать частоту измерений"))
         self.pushButton_22.setText(_translate("MainWindow", "Загрузить калибровочную информацию"))
         self.lineEdit_2.setText(_translate("MainWindow", "213"))
         self.label_24.setText(_translate("MainWindow", "мкм"))
+        self.pushButton_24.setText(_translate("MainWindow", "Старт"))
+        self.lineEdit_4.setText(_translate("MainWindow", "10000"))
         self.tabWidget_3.setTabText(self.tabWidget_3.indexOf(self.calibrate_2), _translate("MainWindow", "Калибровочный режим"))
         self.label_29.setText(_translate("MainWindow", "Диалоговое окно"))
         self.label_28.setText(_translate("MainWindow", "мкм"))
-        self.label_25.setText(_translate("MainWindow", "Текущее расстояние:"))
+        self.label_25.setText(_translate("MainWindow", "Текущее расстояние до объекта"))
         self.label_27.setText(_translate("MainWindow", "%"))
         self.label_26.setText(_translate("MainWindow", "±"))
         self.tabWidget_4.setTabText(self.tabWidget_4.indexOf(self.tab_3), _translate("MainWindow", "Расстояние"))
@@ -448,46 +450,46 @@ class Ui_MainWindow(object):
         self.textBrowser.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">213 213 123 5413425 452</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45354</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">345</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">453</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">345</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">4</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">34</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">53</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">345</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">345</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">453</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">345</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">34</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">53</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">453</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">453</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">345</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">453</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">45</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3</p></body></html>"))
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:16pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">213 213 123 5413425 452</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45354</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">345</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">3</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">453</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">345</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">3</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">4</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">34</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">53</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">345</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">3</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">345</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">3</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">3</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">453</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">345</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">3</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">34</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">53</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">453</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">3</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">453</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">345</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">3</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">3</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">453</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">45</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">3</span></p></body></html>"))
         self.pushButton_2.setText(_translate("MainWindow", "Disconnect"))
         self.pushButton.setText(_translate("MainWindow", "Connect"))
         __sortingEnabled = self.listWidget_6.isSortingEnabled()
