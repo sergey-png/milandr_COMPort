@@ -1,16 +1,11 @@
 import sys
 import time
 import random
-from random import randint
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from base import Ui_MainWindow
 import threading
-from PyQt5.QtWidgets import QTextBrowser
-from functools import partial
 from collections import deque
 import numpy as np
-import pyqtgraph as pg
 from pyqtgraph import PlotWidget
 from pymodbus.client.sync import ModbusSerialClient
 
@@ -53,6 +48,13 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.listWidget_6.setEnabled(False)
         self.ui.pushButton_14.setEnabled(False)
         self.ui.pushButton_24.setEnabled(False)
+        self.ui.pushButton_6.setEnabled(False)
+        self.ui.pushButton_8.setEnabled(False)
+        self.ui.pushButton_9.setEnabled(False)
+        self.ui.pushButton_10.setEnabled(False)
+        self.ui.pushButton_11.setEnabled(False)
+        self.ui.pushButton_12.setEnabled(False)
+
         self.ui.textBrowser_2.setText("Информационное окно")
         self.ui.lineEdit_4.setText(str(self.frequency))
         self.ui.widget.setXRange(0, 20)
@@ -154,7 +156,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
     def push_button_20(self):
         # TODO Вычислить калибровочные коэффициенты
         self.ui.pushButton_20.setEnabled(False)
-        self.ui.pushButton_21.setEnabled(True)
+        self.ui.pushButton_22.setEnabled(True)
 
     # Set frequency
     def push_button_21(self):
@@ -168,16 +170,13 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             # TODO Отправить регистр с частотой измерений
             result = self.client.write_register(40001, frequency, unit=1)  # address=40001, data=frequency, slave_unit=1
             print(result)
-            self.ui.pushButton_22.setEnabled(True)
+            self.ui.pushButton_24.setEnabled(True)
 
     def push_button_22(self):
         # TODO загрузить калибровочную информацию
         self.ui.pushButton_22.setEnabled(False)
-        self.ui.pushButton_24.setEnabled(True)
+        self.ui.pushButton_21.setEnabled(True)
         pass
-
-
-
 
 
 get_data_thread = False

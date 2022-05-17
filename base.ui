@@ -1103,26 +1103,6 @@ p, li { white-space: pre-wrap; }
           <string>kHz</string>
          </property>
         </widget>
-        <widget class="QComboBox" name="comboBox_2">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>201</y>
-           <width>111</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <item>
-          <property name="text">
-           <string>Minimum</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Maximum</string>
-          </property>
-         </item>
-        </widget>
         <widget class="QPushButton" name="pushButton_6">
          <property name="geometry">
           <rect>
@@ -1139,7 +1119,7 @@ p, li { white-space: pre-wrap; }
         <widget class="QPushButton" name="pushButton_12">
          <property name="geometry">
           <rect>
-           <x>100</x>
+           <x>30</x>
            <y>250</y>
            <width>311</width>
            <height>31</height>
@@ -1154,6 +1134,19 @@ p, li { white-space: pre-wrap; }
           <rect>
            <x>380</x>
            <y>60</y>
+           <width>111</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>213</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_3">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>200</y>
            <width>111</width>
            <height>31</height>
           </rect>
