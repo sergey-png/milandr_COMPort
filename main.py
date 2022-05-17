@@ -13,6 +13,7 @@ import pyqtgraph as pg
 from pyqtgraph import PlotWidget
 
 
+
 class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MyWin, self).__init__()
@@ -233,7 +234,7 @@ def drawing_thread(widget: PlotWidget, ):
     widget.setYRange(0, 10)
 
     while True:
-        time.sleep(0.1)
+        time.sleep(0.3)
         print("drawing")
         widget.clear()
         widget.plot(list(np.arange(0, 21)), global_data, symbolPen='y')
