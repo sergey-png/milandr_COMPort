@@ -17,11 +17,12 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.setupUi(self)
 
         # Параметры
+        self.port = 4
         self.frequency = 1000  # kHz Частота измерений
         self.points = [0, 0, 0]  # Калибровочные точки и их значения расстояния
         self.calibrating_coefficients = []  # Калибровочные коэффициенты
 
-        self.client = ModbusSerialClient(method="rtu", port="COM2", stopbits=1, bytesize=8, parity='N', baudrate=9600)
+        self.client = ModbusSerialClient(method="rtu", port="COM4", stopbits=1, bytesize=8, parity='N', baudrate=19200)
         self.setup_ui()
         self.ui.pushButton_13.clicked.connect(self.push_button_13)
         self.ui.pushButton_14.clicked.connect(self.push_button_14)
@@ -41,6 +42,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowTitle("Milandr Terminal")
         self.setFixedSize(self.size())
         self.ui.textBrowser.setText("Служебная информация")
+        self.ui.spinBox.setValue(self.port)  # set COM{defined_number}
         self.ui.pushButton.setEnabled(False)
         self.ui.pushButton_2.setEnabled(False)
         self.ui.pushButton_3.setEnabled(False)
@@ -70,7 +72,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
     # Connect to COM port
     def push_button_13(self):
         port = "COM" + str(self.ui.spinBox.value())
-        self.client = ModbusSerialClient(method="rtu", port=port, stopbits=1, bytesize=8, parity='N', baudrate=9600)
+        self.client = ModbusSerialClient(method="rtu", port=port, stopbits=1, bytesize=8, parity='N', baudrate=19200)
         check = self.client.connect()
         if check is True:
             print(f"Successfully connected to {port}")
@@ -96,13 +98,18 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # Запросить расстояние
     def push_button_15(self):
-        # TODO Отправить регистр на считывание расстояния и принять holding_registers
+        # принять holding_registers
+        global global_data
         try:
-            result = self.client.write_register(40001, 15, unit=1)  # address=40001, data=15, slave_unit=1
-            print(result)
-            # time.sleep(0.1)
-            result = self.client.read_holding_registers(address=40001, count=10, unit=1)
+            result = self.client.read_holding_registers(address=0, count=1, unit=1)
             print(result.registers)
+            distance = result.registers[0]
+            self.ui.lcdNumber.display(distance)
+            global_data.popleft()
+            global_data.append(distance)
+            self.ui.widget_2.clear()
+            self.ui.widget_2.plot(list(np.arange(0, 21)), global_data, symbolPen='y')
+
         except AttributeError:
             print("No connection")
 
@@ -168,8 +175,8 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             print("Error with selected frequency")
         finally:
             # TODO Отправить регистр с частотой измерений
-            result = self.client.write_register(40001, frequency, unit=1)  # address=40001, data=frequency, slave_unit=1
-            print(result)
+            # result = self.client.write_register(40001, frequency, unit=1)
+            # print(result)
             self.ui.pushButton_24.setEnabled(True)
 
     def push_button_22(self):
@@ -185,13 +192,10 @@ global_data: deque = deque(np.zeros(21))
 
 def get_data_thread_func(client: ModbusSerialClient, LCD1: QtWidgets.QLCDNumber, LCD2: QtWidgets.QLCDNumber,
                          plot: PlotWidget):
-    # Demo data
-    thread2 = threading.Thread(target=demo_data, daemon=True, args=(client,))
-    thread2.start()
     global get_data_thread, global_data
     while get_data_thread is True:
         time.sleep(0.1)
-        result = client.read_holding_registers(40001, 10, unit=1)
+        result = client.read_holding_registers(0, 1, unit=1)
         data = list()
         try:
             data = result.registers
@@ -207,18 +211,6 @@ def get_data_thread_func(client: ModbusSerialClient, LCD1: QtWidgets.QLCDNumber,
             plot.plot(list(np.arange(0, 21)), global_data, symbolPen='y')
             LCD1.display(data)
             LCD2.display(random.randint(1, 5))
-
-
-def demo_data(client):
-    while True:
-        for i in range(0, 11):
-            time.sleep(0.1)
-            write_result = client.write_register(40001, i, unit=1)
-            print(write_result)
-        for i in range(9, -1, -1):
-            time.sleep(0.1)
-            write_result = client.write_register(40001, i, unit=1)
-            print(write_result)
 
 
 if __name__ == "__main__":
