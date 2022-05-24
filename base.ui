@@ -339,10 +339,13 @@
           </rect>
          </property>
          <property name="text">
-          <string>Точка 1</string>
+          <string>5 мм</string>
          </property>
         </widget>
         <widget class="QPushButton" name="pushButton_18">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="geometry">
           <rect>
            <x>140</x>
@@ -352,10 +355,13 @@
           </rect>
          </property>
          <property name="text">
-          <string>Точка 2</string>
+          <string>7.4 мм</string>
          </property>
         </widget>
         <widget class="QPushButton" name="pushButton_19">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="geometry">
           <rect>
            <x>250</x>
@@ -365,10 +371,13 @@
           </rect>
          </property>
          <property name="text">
-          <string>Точка 3</string>
+          <string>8.6 мм</string>
          </property>
         </widget>
         <widget class="QPushButton" name="pushButton_20">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="geometry">
           <rect>
            <x>30</x>
@@ -401,6 +410,9 @@
          </property>
         </widget>
         <widget class="QPushButton" name="pushButton_21">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="geometry">
           <rect>
            <x>250</x>
@@ -414,6 +426,9 @@
          </property>
         </widget>
         <widget class="QPushButton" name="pushButton_22">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="geometry">
           <rect>
            <x>30</x>
@@ -424,38 +439,6 @@
          </property>
          <property name="text">
           <string>Загрузить калибровочную информацию</string>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="lineEdit_2">
-         <property name="geometry">
-          <rect>
-           <x>380</x>
-           <y>60</y>
-           <width>111</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>213</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_24">
-         <property name="geometry">
-          <rect>
-           <x>500</x>
-           <y>60</y>
-           <width>71</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <italic>true</italic>
-          </font>
-         </property>
-         <property name="text">
-          <string>мкм</string>
          </property>
         </widget>
         <widget class="QPushButton" name="pushButton_24">
@@ -485,6 +468,38 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_25">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>360</x>
+           <y>100</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>10.4 мм</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_26">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>470</x>
+           <y>100</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>12.8 мм</string>
          </property>
         </widget>
        </widget>
@@ -769,7 +784,7 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>10</x>
         <y>400</y>
-        <width>741</width>
+        <width>911</width>
         <height>281</height>
        </rect>
       </property>
@@ -846,12 +861,12 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>240</x>
          <y>-40</y>
-         <width>531</width>
+         <width>681</width>
          <height>331</height>
         </rect>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="tab_4">
         <attribute name="title">
@@ -1153,6 +1168,32 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="text">
           <string>213</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_16">
+         <property name="geometry">
+          <rect>
+           <x>360</x>
+           <y>100</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Точка 4</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_27">
+         <property name="geometry">
+          <rect>
+           <x>470</x>
+           <y>100</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Точка 5</string>
          </property>
         </widget>
        </widget>
