@@ -133,8 +133,6 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             get_data_thread = False
 
     def push_button_17(self):  # точка 0 = 5 мм
-        # TODO считать значение текущего напряжения с микроконтроллера и записать в
-        #  self.points[0] = U
         res = self.client.read_holding_registers(address=1, count=2, unit=1)
         mess = res.registers
         result = float(f"{mess[0]}.{mess[1]}")
@@ -145,8 +143,6 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.pushButton_18.setEnabled(True)
 
     def push_button_18(self):  # точка 1 = 7.4 мм
-        # TODO считать значение текущего напряжения с микроконтроллера и записать в
-        #  self.points[1] = U
         res = self.client.read_holding_registers(address=1, count=2, unit=1)
         mess = res.registers
         result = float(f"{mess[0]}.{mess[1]}")
@@ -157,8 +153,6 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.pushButton_19.setEnabled(True)
 
     def push_button_19(self):  # точка 2 = 8.6 мм
-        # TODO считать значение текущего напряжения с микроконтроллера и записать в
-        #  self.points[2] = U
         res = self.client.read_holding_registers(address=1, count=2, unit=1)
         mess = res.registers
         result = float(f"{mess[0]}.{mess[1]}")
@@ -169,8 +163,6 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.pushButton_25.setEnabled(True)
 
     def push_button_25(self):  # точка 3 = 10.4 мм
-        # TODO считать значение текущего напряжения с микроконтроллера и записать в
-        #  self.points[3] = U
         res = self.client.read_holding_registers(address=1, count=2, unit=1)
         mess = res.registers
         result = float(f"{mess[0]}.{mess[1]}")
@@ -181,8 +173,6 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.pushButton_26.setEnabled(True)
 
     def push_button_26(self):  # точка 4 = 12.8 мм
-        # TODO считать значение текущего напряжения с микроконтроллера и записать в
-        #  self.points[4] = U
         res = self.client.read_holding_registers(address=1, count=2, unit=1)
         mess = res.registers
         result = float(f"{mess[0]}.{mess[1]}")
@@ -198,8 +188,8 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.pushButton_20.setEnabled(False)
         self.ui.pushButton_22.setEnabled(True)
 
+    # Загрузка калибровочных коэффициентов
     def push_button_22(self):
-        # TODO загрузить калибровочную информацию
         registers = []
         for number in self.calibrating_coefficients:
             if number < 0:
@@ -229,7 +219,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         finally:
             freq = list(map(int, str(frequency).split('.')))
             print(freq)
-            # TODO Отправить регистр с частотой измерений
+            # Отправка регистра с частотой измерений
             self.client.write_registers(address=15, values=freq, unit=1)
 
             self.ui.pushButton_24.setEnabled(True)
