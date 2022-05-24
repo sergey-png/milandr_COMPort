@@ -27,9 +27,8 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.pushButton_13.clicked.connect(self.push_button_13)
         self.ui.pushButton_14.clicked.connect(self.push_button_14)
         self.ui.pushButton_15.clicked.connect(self.push_button_15)
-        self.ui.pushButton_21.clicked.connect(self.push_button_21)
         self.ui.pushButton_23.clicked.connect(self.push_button_23)
-        self.ui.pushButton_24.clicked.connect(self.push_button_23)  # Not an error
+        self.ui.pushButton_24.clicked.connect(self.push_button_24)
 
         self.ui.pushButton_17.clicked.connect(self.push_button_17)
         self.ui.pushButton_18.clicked.connect(self.push_button_18)
@@ -87,28 +86,32 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # Выбрать режим работы микроконтроллера
     def push_button_14(self):
-        selected_type = self.ui.listWidget_7.currentIndex()
-        print(f"Selected: {selected_type.row()}")
+        selected_type = self.ui.listWidget_7.currentIndex().row() + 1
+        print(f"Selected: {selected_type}")
 
-        # TODO Отправить регистр о режиме работы микроконтроллера
+        # Отправить регистр о режиме работы микроконтроллера
+        self.client.write_register(address=0, value=selected_type, unit=1)
 
-        if selected_type.row() == 2:
+        if selected_type == 3:
             self.ui.pushButton_17.setEnabled(True)
-        d = {0: "ручной", 1: "автоматический", 2: "калибровочный"}
-        self.ui.textBrowser_2.setText(f"Установлен {d[selected_type.row()]} режим работы")
-        self.ui.tabWidget_3.setCurrentIndex(selected_type.row() + 1)
+        d = {1: "ручной", 2: "автоматический", 3: "калибровочный"}
+        self.ui.textBrowser_2.setText(f"Установлен {d[selected_type]} режим работы")
+        self.ui.tabWidget_3.setCurrentIndex(selected_type)
 
     # Запросить расстояние
     def push_button_15(self):
         # принять holding_registers
         global global_data
         try:
-            result = self.client.read_holding_registers(address=0, count=1, unit=1)
+            result = self.client.read_holding_registers(address=17, count=4, unit=1)
             print(result.registers)
-            distance = result.registers[0]
-            self.ui.lcdNumber.display(distance)
+            distance = float(f"{result.registers[0]}.{result.registers[1]}")  # дистанция
+            error = float(f"{result.registers[2]}.{result.registers[3]}")  # погрешность
+            self.ui.lcdNumber.display(distance)  # вывод дистации
             global_data.popleft()
             global_data.append(distance)
+            # TODO вомзожен вывод погрешности
+            self.ui.lcdNumber_2.display(error)  # вывод погрешности
             self.ui.widget_2.clear()
             self.ui.widget_2.plot(list(np.arange(0, 21)), global_data, symbolPen='y')
 
@@ -219,17 +222,30 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
     def push_button_21(self):
         frequency = self.ui.lineEdit_4.text()
         try:
-            frequency = int(frequency)
+            frequency = float(frequency)
             print(f"Selected frequency is {frequency}")
         except ValueError:
             print("Error with selected frequency")
         finally:
+            freq = list(map(int, str(frequency).split('.')))
+            print(freq)
             # TODO Отправить регистр с частотой измерений
-            # result = self.client.write_register(40001, frequency, unit=1)
-            # print(result)
+            self.client.write_registers(address=15, values=freq, unit=1)
+
             self.ui.pushButton_24.setEnabled(True)
 
-
+    def push_button_24(self):
+        global get_data_thread
+        if get_data_thread is False:
+            self.ui.pushButton_24.setStyleSheet("background-color: rgb(0, 222, 0); color: rgb(0,0,0); font-size:16px;")
+            get_data_thread = True
+            thread1 = threading.Thread(target=get_data_thread_func,
+                                       daemon=True, args=(self.client, self.ui.lcdNumber,
+                                                          self.ui.lcdNumber_2, self.ui.widget_2))
+            thread1.start()
+        else:
+            self.ui.pushButton_24.setStyleSheet("background-color: rgb(222, 0, 0); color: rgb(0,0,0); font-size:16px;")
+            get_data_thread = False
 
 
 get_data_thread = False
@@ -240,23 +256,25 @@ def get_data_thread_func(client: ModbusSerialClient, LCD1: QtWidgets.QLCDNumber,
                          plot: PlotWidget):
     global get_data_thread, global_data
     while get_data_thread is True:
-        time.sleep(0.1)
-        result = client.read_holding_registers(0, 1, unit=1)
+        time.sleep(0.05)
+        result = client.read_holding_registers(address=17, count=4, unit=1)
         data = list()
         try:
             data = result.registers
             # print(data)
         except AttributeError:
             print("No registers found")
-        data = data[0]
+        result1 = float(f"{data[0]}.{data[1]}")
+        result2 = float(f"{data[2]}.{data[3]}")
+        print(result1, result2)
         # print(data)
-        if global_data[len(global_data) - 1] != data:
-            global_data.popleft()
-            global_data.append(data)
-            plot.clear()
-            plot.plot(list(np.arange(0, 21)), global_data, symbolPen='y')
-            LCD1.display(data)
-            LCD2.display(random.randint(1, 5))
+        # if global_data[len(global_data) - 1] != result1:
+        global_data.popleft()
+        global_data.append(result1)
+        plot.clear()
+        plot.plot(list(np.arange(0, 21)), global_data, symbolPen='y')
+        LCD1.display(result1)
+        LCD2.display(random.randint(1, 5))  # result 2 должен быть в случае получения погрешности
 
 
 if __name__ == "__main__":
