@@ -1,12 +1,14 @@
 import random
 import time
-
 from pymodbus.client.sync import ModbusSerialClient
 
-client = ModbusSerialClient(method="rtu", port="COM6", stopbits=1, bytesize=8, parity='N', baudrate=19200)
+client = ModbusSerialClient(method="rtu", port="COM8", stopbits=1, bytesize=8, parity='N', baudrate=115200)
 print(client.connect())
+
+
 try:
-    result = client.read_holding_registers(address=0, count=50, unit=1)
+    result = client.read_holding_registers(address=0, count=1, unit=1)
+    print(result)
     print(result.registers)  # Returns attribute error if result don't have recv registers
 except AttributeError:
     print("No connection")

@@ -17,12 +17,12 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.setupUi(self)
 
         # Параметры
-        self.port = 6
+        self.port = 8
         self.frequency = 1000  # kHz Частота измерений
         self.points = [0, 0, 0, 0, 0]  # ЗНАЧЕНИЯ НАПРЯЖЕНИЯ НА КОНТРОЛЬНЫХ ТОЧКАХ
         self.calibrating_coefficients = []  # Калибровочные коэффициенты
 
-        self.client = ModbusSerialClient(method="rtu", port="COM4", stopbits=1, bytesize=8, parity='N', baudrate=19200)
+        self.client = ModbusSerialClient(method="rtu", port="COM4", stopbits=1, bytesize=8, parity='N', baudrate=115200)
         self.setup_ui()
         self.ui.pushButton_13.clicked.connect(self.push_button_13)
         self.ui.pushButton_14.clicked.connect(self.push_button_14)
@@ -73,7 +73,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
     # Connect to COM port
     def push_button_13(self):
         port = "COM" + str(self.ui.spinBox.value())
-        self.client = ModbusSerialClient(method="rtu", port=port, stopbits=1, bytesize=8, parity='N', baudrate=19200)
+        self.client = ModbusSerialClient(method="rtu", port=port, stopbits=1, bytesize=8, parity='N', baudrate=115200)
         check = self.client.connect()
         if check is True:
             print(f"Successfully connected to {port}")
@@ -98,11 +98,13 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.textBrowser_2.setText(f"Установлен {d[selected_type]} режим работы")
         self.ui.tabWidget_3.setCurrentIndex(selected_type)
 
-    # Запросить расстояние
+    # Запросить расстояние один раз
     def push_button_15(self):
         # принять holding_registers
         global global_data
         try:
+            self.client.write_register(address=0, value=9, unit=1)
+            time.sleep(0.1)
             result = self.client.read_holding_registers(address=17, count=4, unit=1)
             print(result.registers)
             distance = float(f"{result.registers[0]}.{result.registers[1]}")  # дистанция
@@ -114,6 +116,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             self.ui.lcdNumber_2.display(error)  # вывод погрешности
             self.ui.widget_2.clear()
             self.ui.widget_2.plot(list(np.arange(0, 21)), global_data, symbolPen='y')
+            self.ui.textBrowser_2.setText(f"Успешно запрошено расстояние!")
 
         except AttributeError:
             print("No connection")
@@ -128,63 +131,86 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
                                        daemon=True, args=(self.client, self.ui.lcdNumber,
                                                           self.ui.lcdNumber_2, self.ui.widget_2))
             thread1.start()
+            self.ui.textBrowser_2.setText(f"Началось автоматическое считывание данных...")
         else:
             self.ui.pushButton_23.setStyleSheet("background-color: rgb(222, 0, 0); color: rgb(0,0,0); font-size:16px;")
             get_data_thread = False
+            self.ui.textBrowser_2.setText(f"Автоматическое считывание данных прекращено!")
 
     def push_button_17(self):  # точка 0 = 5 мм
+        self.client.write_register(address=0, value=7, unit=1)
+        time.sleep(0.1)
         res = self.client.read_holding_registers(address=1, count=2, unit=1)
         mess = res.registers
         result = float(f"{mess[0]}.{mess[1]}")
         print(result)
         self.points[0] = result
         print("Записана первая точка")
+        self.ui.textBrowser_2.setText("Записана 1 точка")
         self.ui.pushButton_17.setEnabled(False)
         self.ui.pushButton_18.setEnabled(True)
 
     def push_button_18(self):  # точка 1 = 7.4 мм
+        self.client.write_register(address=0, value=7, unit=1)
+        time.sleep(0.1)
         res = self.client.read_holding_registers(address=1, count=2, unit=1)
         mess = res.registers
         result = float(f"{mess[0]}.{mess[1]}")
         print(result)
         self.points[1] = result
         print("Записана вторая точка")
+        self.ui.textBrowser_2.setText("Записана 2 точка")
         self.ui.pushButton_18.setEnabled(False)
         self.ui.pushButton_19.setEnabled(True)
 
     def push_button_19(self):  # точка 2 = 8.6 мм
+        self.client.write_register(address=0, value=7, unit=1)
+        time.sleep(0.1)
         res = self.client.read_holding_registers(address=1, count=2, unit=1)
         mess = res.registers
         result = float(f"{mess[0]}.{mess[1]}")
         print(result)
         self.points[2] = result
         print("Записана третья точка")
+        self.ui.textBrowser_2.setText("Записана 3 точка")
         self.ui.pushButton_19.setEnabled(False)
         self.ui.pushButton_25.setEnabled(True)
 
     def push_button_25(self):  # точка 3 = 10.4 мм
+        self.client.write_register(address=0, value=7, unit=1)
+        time.sleep(0.1)
         res = self.client.read_holding_registers(address=1, count=2, unit=1)
         mess = res.registers
         result = float(f"{mess[0]}.{mess[1]}")
         print(result)
         self.points[3] = result
         print("Записана четвертая точка")
+        self.ui.textBrowser_2.setText("Записана 4 точка")
         self.ui.pushButton_25.setEnabled(False)
         self.ui.pushButton_26.setEnabled(True)
 
     def push_button_26(self):  # точка 4 = 12.8 мм
+        self.client.write_register(address=0, value=7, unit=1)
+        time.sleep(0.1)
         res = self.client.read_holding_registers(address=1, count=2, unit=1)
         mess = res.registers
         result = float(f"{mess[0]}.{mess[1]}")
         print(result)
         self.points[4] = result
         print("Записана пятая точка")
+        self.ui.textBrowser_2.setText("Записана 5 точка")
         self.ui.pushButton_26.setEnabled(False)
         self.ui.pushButton_20.setEnabled(True)
 
     def push_button_20(self):
         # TODO Вычислить калибровочные коэффициенты по полученным значениям напряжения в контр точках
         self.calibrating_coefficients = [3.34, -4.755, 12.038, 0.317]
+        text = f"Рассчитанные калибровочные коэффициенты:\n" \
+               f"{self.calibrating_coefficients[0]}\n" \
+               f"{self.calibrating_coefficients[1]}\n" \
+               f"{self.calibrating_coefficients[2]}\n" \
+               f"{self.calibrating_coefficients[3]}\n"
+        self.ui.textBrowser_2.setText(text)
         self.ui.pushButton_20.setEnabled(False)
         self.ui.pushButton_22.setEnabled(True)
 
@@ -204,6 +230,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
         self.client.write_registers(address=3, values=registers, unit=1)
         res = self.client.read_holding_registers(address=0, count=23, unit=1)
         print(res.registers)
+        self.ui.textBrowser_2.setText("Калибровочная информация загружена!")
         self.ui.pushButton_22.setEnabled(False)
         self.ui.pushButton_21.setEnabled(True)
         pass
@@ -221,7 +248,7 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
             print(freq)
             # Отправка регистра с частотой измерений
             self.client.write_registers(address=15, values=freq, unit=1)
-
+            self.ui.textBrowser_2.setText("Частота измерений записана!")
             self.ui.pushButton_24.setEnabled(True)
 
     def push_button_24(self):
@@ -233,9 +260,11 @@ class MyWin(QtWidgets.QMainWindow, Ui_MainWindow):
                                        daemon=True, args=(self.client, self.ui.lcdNumber,
                                                           self.ui.lcdNumber_2, self.ui.widget_2))
             thread1.start()
+            self.ui.textBrowser_2.setText(f"Началось автоматическое считывание данных...")
         else:
             self.ui.pushButton_24.setStyleSheet("background-color: rgb(222, 0, 0); color: rgb(0,0,0); font-size:16px;")
             get_data_thread = False
+            self.ui.textBrowser_2.setText(f"Автоматическое считывание данных прекращено!")
 
 
 get_data_thread = False
@@ -248,14 +277,8 @@ def get_data_thread_func(client: ModbusSerialClient, LCD1: QtWidgets.QLCDNumber,
     while get_data_thread is True:
         time.sleep(0.05)
         result = client.read_holding_registers(address=17, count=4, unit=1)
-        data = list()
-        try:
-            data = result.registers
-            # print(data)
-        except AttributeError:
-            print("No registers found")
-        result1 = float(f"{data[0]}.{data[1]}")
-        result2 = float(f"{data[2]}.{data[3]}")
+        result1 = float(f"{result.registers[0]}.{result.registers[1]}")  # дистанция
+        result2 = float(f"{result.registers[2]}.{result.registers[3]}")  # погрешность
         print(result1, result2)
         # print(data)
         # if global_data[len(global_data) - 1] != result1:
