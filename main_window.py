@@ -275,7 +275,7 @@ def get_data_thread_func(client: ModbusSerialClient, LCD1: QtWidgets.QLCDNumber,
                          plot: PlotWidget):
     global get_data_thread, global_data
     while get_data_thread is True:
-        time.sleep(0.05)
+        time.sleep(0.2)
         result = client.read_holding_registers(address=17, count=4, unit=1)
         result1 = float(f"{result.registers[0]}.{result.registers[1]}")  # дистанция
         result2 = float(f"{result.registers[2]}.{result.registers[3]}")  # погрешность
