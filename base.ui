@@ -555,7 +555,7 @@
           </font>
          </property>
          <property name="text">
-          <string>мкм</string>
+          <string>мм</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
